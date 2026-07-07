@@ -12,7 +12,7 @@ class StorePanneRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,7 @@ class StorePanneRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'panneAmount' => 'required|double',
+            'panneAmount' => 'required|numeric',
         ];
     }
 
@@ -34,7 +34,7 @@ class StorePanneRequest extends FormRequest
         return [
             'name.required'=> 'le nom est obligatoire',
             'panneAmount.required'=> 'le prix de la reparation doit etre renséigné',
-            'panneAmount.double'=> 'le prix dois etre un double',
+            'panneAmount.numeric'=> 'le prix dois etre un double',
         ];
     }
 }

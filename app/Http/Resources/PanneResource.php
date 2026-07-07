@@ -19,8 +19,8 @@ class PanneResource extends JsonResource
             'name'=>$this->name,
             'description'=>$this->description,
             'panneAmount'=>$this->panneAmount,
-            'created_at'=>$this->created_at->format('d/m/Y H:i'),
-            'update_at'=>$this->update_at->format('d/m/Y H:i'),
+            'created_at' => $this->created_at->format('d/m/Y H:i'),
+            'updated_at' => $this->updated_at->format('d/m/Y H:i'),
         ];
     }
 }

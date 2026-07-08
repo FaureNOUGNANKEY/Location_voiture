@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\HistoricController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DriverController;
@@ -15,3 +15,5 @@ Route::apiResource('categories',CategoryController::class);
 Route::apiResource('drivers',DriverController::class);
 Route::apiResource('pannes',PanneController::class);
 Route::apiResource('cars',CarController::class);
+Route::apiResource('historics',HistoricController::class);
+

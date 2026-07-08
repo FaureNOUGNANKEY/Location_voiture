@@ -21,7 +21,7 @@ class HistoricResource extends JsonResource
             'dateConnexion' => $this->dateConnexion,
             'heureDeconnexion' => $this->heureDeconnexion,
 
-            //'user' => new UserResource($this->whenLoaded('user')),
+            'user' => new UserResource($this->whenLoaded('user')),
             'created_at' => $this->created_at->format('d/m/Y H:i'),
             'updated_at' => $this->updated_at->format('d/m/Y H:i'),
         ];

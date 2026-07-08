@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Historic;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['lastname','firstname','email','password','type','CNI','adress','photo','phone','active','role',])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -29,4 +30,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function historic()
+    {
+        return $this->hasMany(Historic::class);
+    }
+
 }

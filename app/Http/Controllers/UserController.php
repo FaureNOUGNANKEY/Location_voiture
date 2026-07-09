@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -14,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('creted_at','desc')->paginate(15);
+        $users = User::orderBy('created_at','desc')->paginate(15);
         return UserResource::collection($users);
     }
 
@@ -39,7 +40,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreUserRequest $request,int $id)
+    public function update(UpdateUserRequest $request,int $id)
     {
         $user = User::findOrFail($id);
         $user->update($request->validated());
@@ -52,7 +53,7 @@ class UserController extends Controller
     public function destroy(int $id)
     {
         $user = User::findOrFail($id);
-        $user->detete();
+        $user->delete();
         return response()->Json(["message" => "utilisateur supprimé"],200);
     }
 }

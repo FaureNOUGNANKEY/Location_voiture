@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    protected $fillable = ['id','user_id','car_id','dateStart','dateBack','dayAmount','status'];
+    protected $fillable = ['id','user_id','car_id','driver_id','dateStart','dateBack','dayAmount','driverAmount','type','status'];
 
     public function User() {
         return $this->belongsTo(User::class);
@@ -14,6 +14,9 @@ class Reservation extends Model
 
     public function car() {
         return $this->belongsTo(Car::class);
+    }
+    public function driver() {
+        return $this->belongsTo(Driver::class);
     }
 
 }

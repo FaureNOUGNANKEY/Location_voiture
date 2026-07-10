@@ -25,9 +25,12 @@ class StoreReservationRequest extends FormRequest
         return [
             'user_id'   => 'required|exists:users,id',
             'car_id'      => 'required|exists:cars,id',
+            'driver_id'   => 'nullable|exists:drivers,id',
             'dateStart'  => 'required|date|after_or_equal:today',
-            'dateBack'   => 'required|date|after:dateStart',
+            'dateBack'   => 'nullable|date|after:dateStart',
             'dayAmount'      => 'nullable|numeric|min:0',
+            'driverAmount'   => 'nullable|numeric|min:0',
+            'type'         => 'required|in:reservation,leasing',
             'status'      => 'required|in:En attente,validé,annulée',
         ];
     }
@@ -42,9 +45,13 @@ class StoreReservationRequest extends FormRequest
             'dateStart.required'  => 'La date de début est obligatoire.',
             'dateStart.date'      => 'La date de début doit être une date valide.',
             'dateStart.after_or_equal' => 'La date de début doit être aujourd\'hui ou une date future.',
-            'dateBack.required'   => 'La date de retour est obligatoire.',
             'dateBack.date'       => 'La date de retour doit être une date valide.',
             'dateBack.after'      => 'La date de retour doit être après la date de début.',
+            'driver_id.exists'   => 'Le chauffeur sélectionné n\'existe pas.',
+            'driverAmount.numeric' => 'Le montant du chauffeur doit être un nombre.',
+            'driverAmount.min'     => 'Le montant du chauffeur doit être supérieur ou égal à 0.',
+            'type.required'       => 'Le type de réservation est obligatoire.',
+            'type.in'             => 'Le type de réservation doit être "reservation" ou "leasing".',
             'status.required'     => 'Le statut est obligatoire.',
             'status.in'           => 'Le statut doit être "En attente", "validé" ou "annulée".',
         ];

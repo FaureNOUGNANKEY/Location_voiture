@@ -16,14 +16,17 @@ class ReservationResource extends JsonResource
     {
         return [
             'id'         => $this->id,
-            'date_start' => $this->date_start,
-            'date_back'  => $this->date_back,
+            'dateStart' => $this->dateStart,
+            'dateBack'  => $this->dateBack,
             'dayAmount'     => $this->dayAmount,
+            'driverAmount'  => $this->driverAmount,
+            'type'       => $this->type,
             'status'     => $this->status,
 
-            'client' => new UserResource($this->whenLoaded('client')),
+            'user' => new UserResource($this->whenLoaded('user')),
             'car' => new CarResource($this->whenLoaded('car')),
-            
+            'driver' => new DriverResource($this->whenLoaded('driver')),
+
             'created_at' => $this->created_at->format('d/m/Y H:i'),
             'updated_at' => $this->updated_at->format('d/m/Y H:i'),
         ];

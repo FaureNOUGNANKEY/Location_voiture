@@ -41,10 +41,9 @@ class StoreUserRequest extends FormRequest
             'photo'      => 'nullable|string|max:255',
             'phone'      => 'required|string|max:20',
             'active'     => 'boolean',
-            'role'       => 'required|string|max:50',
+            'role'       => 'string|max:50',
         ];
     }
-
     public function messages(): array
     {
         return [
@@ -60,7 +59,6 @@ class StoreUserRequest extends FormRequest
             'CNI.required'        => 'Le numéro de CNI est obligatoire.',
             'adress.required'     => 'L\'adresse est obligatoire.',
             'phone.required'      => 'Le numéro de téléphone est obligatoire.',
-            'role.required'       => 'Le rôle est obligatoire.',
         ];
     }
 }

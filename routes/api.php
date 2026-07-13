@@ -7,6 +7,7 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\PanneController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,5 +23,9 @@ Route::apiResource('historics',HistoricController::class);
 Route::apiResource('users',UserController::class);
 Route::apiResource('reservations', ReservationController::class);
 Route::apiResource('invoices',InvoiceController::class);
+
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 

@@ -3,6 +3,47 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+/**
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ * @mixin \Illuminate\Database\Query\Builder
+ * @property int $id
+ * @property int $reservation_id
+ * @property string $invoiceNumber
+ * @property numeric $driverAmount
+ * @property numeric $reductionAmount
+ * @property numeric $tvaAmount
+ * @property numeric $amount
+ * @property numeric $totalAmount
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Payment> $payment
+ * @property-read int|null $payment_count
+ * @property-read \App\Models\Reservation $reservation
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereDriverAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereInvoiceNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereReductionAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereReservationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereTvaAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereMoth($value)
+ * /**
+ * App\Models\Invoice
+ *
+ * @method static int sum(string $column)
+ * @method static \Illuminate\Database\Eloquent\Builder whereMonth(string $column, int $value)
+ * @method static \Illuminate\Database\Eloquent\Builder whereYear(string $column, int $value)
+ * @method static \Illuminate\Database\Eloquent\Builder query()
+ */
+
 
 class Invoice extends Model
 {

@@ -11,6 +11,7 @@ use App\Http\Controllers\PanneController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StatisticsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,6 +27,7 @@ Route::get('/user', function (Request $request) {
     Route::apiResource('reservations', ReservationController::class);
     Route::apiResource('invoices',InvoiceController::class);
     Route::apiResource('payments',PaymentController::class);
+    Route::get('/statistics', [StatisticsController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
 //});
 

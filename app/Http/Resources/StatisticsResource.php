@@ -17,15 +17,21 @@ class StatisticsResource extends JsonResource
         return [
             'totals' => [
                 'cars'         => $this->totalCars,
+                'drivers' => $this->totalDrivers,
+                'reservations' => $this->totalReservations,
+                'clients' => $this->totalClients,
+
                 'activeReservations' => $this->activeReservations,
+
                 'availableDrivers'      => $this->availableDrivers,
+                'unAvailableDrivers' => $this->unAvailableDrivers,
+                'busyDrivers'        => $this->busyDrivers,
                 'monthlyRevenue'      => $this->monthlyRevenue,
-            ],
-            'carsStatus' => [
-                'available'   => $this->carsAvailable,
-                'unAvailable' => $this->carsUnAvailable,
-                'rented'      => $this->carsRented,
-                'broken'      => $this->carsBroken,
+
+                'availableCars'   => $this->carsAvailable,
+                'unAvailableCars' => $this->carsUnAvailable,
+                'rentedCars'      => $this->carsRented,
+                'brokenCars'      => $this->carsBroken,
             ],
             'reservationActivity' => $this->reservationActivity,
         ];

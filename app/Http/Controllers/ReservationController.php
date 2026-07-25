@@ -20,7 +20,21 @@ class ReservationController extends Controller
     public function store(StoreReservationRequest $request)
     {
         $reservation = Reservation::create($request->validated());
-        return new ReservationResource($reservation);
+
+         // Créer la facture liée (les calculs se font dans Invoice::boot)
+        $invoice = $reservation->invoice()->create([
+            'driverAmount'    => $reservation->driverAmount,
+            'reductionAmount' => $reservation->reductionAmount ?? 0,
+            'status'          => 'En attente',
+        ]);
+
+        //Retourner la réponse API
+        return response()->json([
+            'reservation' => new ReservationResource($reservation),
+            'invoice'     => $invoice
+        ], 201);
+
+       // return new ReservationResource($reservation);
     }
 
     // Afficher une réservation

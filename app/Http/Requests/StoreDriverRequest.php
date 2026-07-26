@@ -34,7 +34,7 @@ class StoreDriverRequest extends FormRequest
                 ),
             ],
             'phone' => 'required|string|max:20',
-            'photo' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'string|max:255|in:disponible,affecté,en congé,inactif,indisponible',
         ];
     }

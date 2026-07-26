@@ -20,6 +20,7 @@ class DriverResource extends JsonResource
             'firstname' => $this->firstname,
             'phone'=> $this->phone,
             'photo' => $this->photo,
+            'photo_url' => $this->photo ? asset('storage/' . $this->photo) : null,
             'status' => $this->status,
             'created_at' => $this->created_at->format('d/m/Y H:i'),
             'updated_at' => $this->updated_at->format('d/m/Y H:i'),

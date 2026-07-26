@@ -24,7 +24,12 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('users', 'public');
+            $data['photo'] = $path;
+        }
+        $user = User::create($data);
         return new UserResource($user);
     }
 
@@ -43,7 +48,12 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request,int $id)
     {
         $user = User::findOrFail($id);
-        $user->update($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('users', 'public');
+            $data['photo'] = $path;
+        }
+        $user->update($data);
         return new UserResource($user);
     }
 

@@ -39,7 +39,7 @@ class StoreUserRequest extends FormRequest
             'pieceType'  => 'required|string|max:255',
             'pieceNumber' => 'required|string|max:50',
             'address'    => 'required|string|max:255',
-            'photo'      => 'nullable|string|max:255',
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'phone'      => 'required|string|max:20',
             'active'     => 'boolean',
             'role'       => 'required|string|max:50',

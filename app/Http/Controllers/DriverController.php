@@ -23,7 +23,12 @@ class DriverController extends Controller
      */
     public function store(StoreDriverRequest $request)
     {
-        $driver = Driver::create($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('drivers', 'public');
+            $data['photo'] = $path;
+        }
+        $driver = Driver::create($data);
         return new DriverResource($driver);
     }
 
@@ -44,7 +49,14 @@ class DriverController extends Controller
     public function update(StoreDriverRequest $request, int $id)
     {
         $driver = Driver::findOrFail($id);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('drivers', 'public');
+            $validated['photo'] = $path;
+        }
         $driver->update($request->validated());
+
+
         return new DriverResource($driver);
     }
 

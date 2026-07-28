@@ -46,7 +46,6 @@ class StoreDriverRequest extends FormRequest
             'lastname.required'  => 'Le nom est obligatoire.',
             'lastname.unique'    => 'Un chauffeur avec ce prénom et ce nom existe déjà.',
             'phone.required'     => 'Le numéro de téléphone est obligatoire.',
-            'photo.string'       => 'La photo doit être une chaîne de caractères (chemin du fichier).',
             'status.string'      => 'Le statut doit être une chaîne de caractères.',
             'status.in'          => 'Le statut doit être l\'un des suivants : disponible, affecté, en congé, inactif, indisponible.',
         ];

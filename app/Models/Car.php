@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Car extends Model
 {
-    protected $fillable = ['id','category_id','mark','type','model','color','photo','imatriculation','description','status','kmAmount','dayAmount','state','place','door','kilometrage','niveauCarburant','domage'];
+    protected $fillable = ['id','category_id','mark','model','color','photo','imatriculation','description','status','kmAmount','dayAmount','state','place','door','kilometrage','niveauCarburant','domage'];
 
     public function category()
     {
@@ -24,5 +24,9 @@ class Car extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+    public function pannes()
+    {
+        return $this->hasMany(Panne::class);
     }
 }

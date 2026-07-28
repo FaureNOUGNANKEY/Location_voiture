@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('pannes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
+            $table->unsignedBigInteger('car_id');
+            $table->string('description');
+            $table->enum('priority',['Urgente','Moyenne', 'Faible']);
+            $table->enum('status',['En attente','En réparation','Réparé'])->default('En attente');
             $table->double('panneAmount');
             $table->timestamps();
+            $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');
         });
     }
 

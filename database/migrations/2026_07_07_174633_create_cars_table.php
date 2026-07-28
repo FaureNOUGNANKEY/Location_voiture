@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('category_id');
             $table->string('mark');
-            $table->string('type');
             $table->string('model');
             $table->string('color');
             $table->string('photo');

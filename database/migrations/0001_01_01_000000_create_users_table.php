@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('firstname');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('type', ['physique', 'morale'])->nullable();
+            $table->enum('type', ['physique', 'morale'])->nullable()->default("physique");
             $table->string('pieceType');
             $table->string('pieceNumber');
             $table->string('address');

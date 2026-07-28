@@ -16,9 +16,14 @@ class PanneResource extends JsonResource
     {
         return [
             'id'=> $this->id,
-            'name'=>$this->name,
+            'car_id'=> $this->car_id,
             'description'=>$this->description,
+            'priority'=>$this->priority,
+            'status'=>$this->status,
             'panneAmount'=>$this->panneAmount,
+
+            'car' => new CarResource($this->whenLoaded('car')),
+
             'created_at' => $this->created_at->format('d/m/Y H:i'),
             'updated_at' => $this->updated_at->format('d/m/Y H:i'),
         ];

@@ -29,7 +29,7 @@ class StatisticsController extends Controller
 
             'carsAvailable' => Car::query()->where('status', 'disponible')->count(),
             'carsUnAvailable' => Car::query()->where('status', 'indisponible')->count(),
-            'carsRented'=> Car::query()->where('status', 'en location')->count(),
+            'carsRented'=> Car::query()->where('status', 'loué')->count(),
             'carsBroken'=> Car::query()->where('status', 'en panne')->count(),
 
             'reservationActivity' => Reservation::query()->selectRaw('DAYNAME(created_at) as day, COUNT(*) as count')

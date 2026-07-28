@@ -14,7 +14,7 @@ class PanneController extends Controller
      */
     public function index()
     {
-        $pannes = Panne::orderBy('created_at','desc')->paginate(15);
+        $pannes = Panne::with('car')->orderBy('created_at','desc')->paginate(15);
         return PanneResource::collection($pannes);
     }
 
@@ -24,6 +24,13 @@ class PanneController extends Controller
     public function store(StorePanneRequest $request)
     {
         $panne = Panne::create($request->validated());
+
+        //Mettre à jour le statut de la voiture associée
+        $car = $panne->car;
+        if ($car) {
+            $car->status = 'en panne';
+            $car->save();
+        }
         return new PanneResource($panne);
     }
 
@@ -32,7 +39,7 @@ class PanneController extends Controller
      */
     public function show(int $id)
     {
-        $panne = Panne::findOrFail($id);
+        $panne = Panne::with('car')->findOrFail($id);
         return new PanneResource($panne);
     }
 
@@ -43,6 +50,11 @@ class PanneController extends Controller
     {
         $panne = Panne::findOrFail($id);
         $panne->update($request->validated());
+
+        if ($panne->status === 'Réparé' && $panne->car) {
+            $panne->car->status = 'Disponible';
+            $panne->car->save();
+        }
         return new PanneResource($panne);
     }
 

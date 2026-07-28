@@ -25,7 +25,6 @@ class StoreCarRequest extends FormRequest
     {
         return [
             'mark'=>'string|required|max:255',
-            'type'=>'string|required|max:255',
             'model'=>'string|required|max:255',
             'color'=>'string|required|max:255',
             'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -49,9 +48,6 @@ class StoreCarRequest extends FormRequest
         return [
             'mark.required'            => 'La marque est obligatoire.',
             'mark.string'              => 'La marque doit être une chaîne de caractères.',
-
-            'type.required'            => 'Le type est obligatoire.',
-            'type.string'              => 'Le type doit être une chaîne de caractères.',
 
             'model.required'           => 'Le modèle est obligatoire.',
             'model.string'             => 'Le modèle doit être une chaîne de caractères.',

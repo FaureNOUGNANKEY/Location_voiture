@@ -14,7 +14,7 @@ class ReservationSeeder extends Seeder
     public function run(): void
     {
         Reservation::create([
-            'user_id'        => 1,
+            'user_id'        => 2,
             'car_id'         => 1,
             'dateStart'     => '2026-07-01',
             'dateBack'      => '2026-07-05',

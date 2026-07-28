@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('lastname');
             $table->string('firstname');
-            $table->string('photo');
+            $table->string('photo')->nullable();
             $table->string('phone');
             $table->enum('status', ['disponible', 'affecté','en congé','inactif','indisponible'])->default('disponible');
             $table->timestamps();

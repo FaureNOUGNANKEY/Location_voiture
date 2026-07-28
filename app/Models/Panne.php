@@ -26,5 +26,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Panne extends Model
 {
-    protected $fillable = ['id','name','description','panneAmount'];
+    protected $fillable = ['id','car_id','description','priority','status','panneAmount'];
+
+    public function car()
+    {
+        return $this->belongsTo(Car::class);
+    }
 }
+
+

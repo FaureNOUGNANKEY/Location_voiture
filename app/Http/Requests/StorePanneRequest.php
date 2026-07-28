@@ -23,18 +23,25 @@ class StorePanneRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:255',
+            'priority' => 'required|in:Faible,Moyenne,Urgente',
+            'status' => 'nullable|in:En attente,En réparation,Réparé',
+            'description' => 'required|string|max:255',
             'panneAmount' => 'required|numeric',
+            'car_id' => 'required|exists:cars,id',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required'=> 'le nom est obligatoire',
+            'priority.required'=> 'la priorité est obligatoire',
+            'description.required'=> 'la description est obligatoire',
+            'status.in' => 'le statut doit être En attente, En réparation, Réparé',
+            'priority.in' => 'le statut doit être Faible, Moyenne, Urgente',
             'panneAmount.required'=> 'le prix de la reparation doit etre renséigné',
             'panneAmount.numeric'=> 'le prix dois etre un double',
+            'car_id.required'   => 'La voiture est obligatoire.',
+            'car_id.exists'     => 'La voiture sélectionnée n\'existe pas.',
         ];
     }
 }

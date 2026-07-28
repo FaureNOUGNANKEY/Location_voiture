@@ -13,7 +13,6 @@ class CarSeeder extends Seeder
             [
                 'category_id'    => 1,
                 'mark'           => 'Toyota',
-                'type'           => 'SUV',
                 'model'          => 'RAV4',
                 'color'          => 'Noir',
                 'photo'          => 'images/cars/toyota_rav4.png',
@@ -34,7 +33,6 @@ class CarSeeder extends Seeder
             [
                 'category_id'    => 2,
                 'mark'           => 'Hyundai',
-                'type'           => 'Berline',
                 'model'          => 'Elantra',
                 'color'          => 'Blanc',
                 'photo'          => 'images/cars/hyundai_elantra.png',
@@ -55,7 +53,6 @@ class CarSeeder extends Seeder
             [
                 'category_id'    => 3,
                 'mark'           => 'BMW',
-                'type'           => 'Sportive',
                 'model'          => 'M3',
                 'color'          => 'Rouge',
                 'photo'          => 'images/cars/bmw_m3.png',
@@ -76,7 +73,6 @@ class CarSeeder extends Seeder
             [
                 'category_id'    => 4,
                 'mark'           => 'Mercedes',
-                'type'           => 'Pickup',
                 'model'          => 'X-Class',
                 'color'          => 'Gris',
                 'photo'          => 'images/cars/mercedes_xclass.png',
@@ -97,7 +93,6 @@ class CarSeeder extends Seeder
             [
                 'category_id'    => 5,
                 'mark'           => 'Peugeot',
-                'type'           => 'Citadine',
                 'model'          => '208',
                 'color'          => 'Bleu',
                 'photo'          => 'images/cars/peugeot_208.png',

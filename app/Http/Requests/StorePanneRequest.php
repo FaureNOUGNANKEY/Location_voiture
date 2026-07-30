@@ -26,7 +26,7 @@ class StorePanneRequest extends FormRequest
             'priority' => 'required|in:Faible,Moyenne,Urgente',
             'status' => 'nullable|in:En attente,En réparation,Réparé',
             'description' => 'required|string|max:255',
-            'panneAmount' => 'required|numeric',
+            'panneAmount' => 'required|numeric|min:0',
             'car_id' => 'required|exists:cars,id',
         ];
     }
@@ -40,8 +40,10 @@ class StorePanneRequest extends FormRequest
             'priority.in' => 'le statut doit être Faible, Moyenne, Urgente',
             'panneAmount.required'=> 'le prix de la reparation doit etre renséigné',
             'panneAmount.numeric'=> 'le prix dois etre un double',
+            'panneAmount.min'=> 'le prix dois etre supérieur à zéro',
             'car_id.required'   => 'La voiture est obligatoire.',
             'car_id.exists'     => 'La voiture sélectionnée n\'existe pas.',
+
         ];
     }
 }

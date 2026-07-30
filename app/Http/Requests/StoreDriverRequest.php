@@ -23,16 +23,19 @@ class StoreDriverRequest extends FormRequest
      */
     public function rules(): array
     {
+         $driverId = $this->route('driver') instanceof \App\Models\Driver
+        ? $this->route('driver')->id
+        : $this->route('driver');
         return [
             'firstname' => 'required|string|max:255',
             'lastname' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('drivers')->where(fn ($query) =>
-                    $query->where('firstname', $this->firstname)
-                ),
-            ],
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('drivers')
+                ->where(fn ($query) => $query->where('firstname', $this->input('firstname')))
+                ->ignore($driverId, 'id'),
+        ],
             'phone' => 'required|string|max:20',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status' => 'string|max:255|in:disponible,affecté,en congé,inactif,indisponible',

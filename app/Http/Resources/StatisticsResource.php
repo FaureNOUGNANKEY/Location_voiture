@@ -20,6 +20,7 @@ class StatisticsResource extends JsonResource
                 'drivers' => $this->totalDrivers,
                 'reservations' => $this->totalReservations,
                 'clients' => $this->totalClients,
+                'admins' => $this->totalAdmins,
 
                 'activeReservations' => $this->activeReservations,
 

@@ -4,9 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Override;
+use Illuminate\Validation\Rule;
 
-class StoreCarRequest extends FormRequest
+class UpdateCarRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,14 +23,23 @@ class StoreCarRequest extends FormRequest
      */
     public function rules(): array
     {
+        $car = $this->route('car');
+
+        if ($car instanceof \Illuminate\Database\Eloquent\Model) {
+            $car = $car->getKey();
+        }
+
         return [
             'mark'=>'string|required|max:255',
             'model'=>'string|required|max:255',
             'color'=>'string|required|max:255',
-            'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'imatriculation' => 'string|required|max:255|unique:cars,imatriculation',
-            'description'=>'nullable|string|max:255',
-            'status'=>'string|max:255|in:disponible,loué,indisponible,en maintenance,en panne',
+            'photo'=>'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            // 'imatriculation'  => 'string|required|max:255|unique:cars,imatriculation,' . $id,
+            'imatriculation' => [
+                'required',
+                Rule::unique('cars')->ignore($car),
+            ],
+            'description'=>'string|nullable|max:255',
             'kmAmount'=>'numeric|required|min:0',
             'dayAmount'=>'numeric|required|min:0',
             'state'=>'string|required|max:255',
@@ -90,8 +99,8 @@ class StoreCarRequest extends FormRequest
             'category_id.required' => 'La catégorie est obligatoire.',
             'category_id.exists'   => 'La catégorie sélectionnée n\'existe pas.',
 
+            'status.required'    => 'Le statut est obligatoire.',
             'status.string'      => 'Le statut doit être une chaîne de caractères.',
         ];
     }
-
 }

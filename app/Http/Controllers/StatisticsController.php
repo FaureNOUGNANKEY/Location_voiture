@@ -18,6 +18,7 @@ class StatisticsController extends Controller
             'totalDrivers' => Driver::query()->count(),
             'totalReservations' => Reservation::query()->count(),
             'totalClients' => User::query()->where('role','client')->count(),
+            'totalAdmins' => User::query()->where('role','admin')->count(),
 
             'activeReservations' => Reservation::query()->where('status', 'en cours')->count(),
             'availableDrivers'=> Driver::query()->where('status', 'disponible')->count(),

@@ -49,12 +49,13 @@ class DriverController extends Controller
     public function update(StoreDriverRequest $request, int $id)
     {
         $driver = Driver::findOrFail($id);
+        $validated = $request->validated();
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('drivers', 'public');
             $validated['photo'] = $path;
         }
-        $driver->update($request->validated());
+        $driver->update($validated);
 
 
         return new DriverResource($driver);

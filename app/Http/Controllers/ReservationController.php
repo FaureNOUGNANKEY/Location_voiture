@@ -49,7 +49,19 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::findOrFail($id);
         $reservation->update($request->validated());
-        return new ReservationResource($reservation);
+
+        $invoice = $reservation->invoice;
+        if ($invoice) {
+            $invoice->update([
+                'driverAmount'    => $reservation->driverAmount,
+                'reductionAmount' => $reservation->reductionAmount ?? 0,
+                'status'          => $invoice->status ?? "En attente",
+        ]);
+    }
+        return response()->json([
+            'reservation' => new ReservationResource($reservation),
+            'invoice'     => $invoice
+        ], 201);
     }
 
     // Supprimer une réservation

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Resources\InvoiceResource;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Setting;
 
 /**
  * App\Models\Reservation
@@ -19,6 +20,48 @@ use Illuminate\Database\Eloquent\Model;
 class Reservation extends Model
 {
     protected $fillable = ['id','user_id','car_id','driver_id','dateStart','dateBack','driverAmount','type','status'];
+
+    public function calculateDriverAmount(float $driverDailyRate): float
+    {
+        $days = 0;
+
+        if ($this->dateStart && $this->dateBack) {
+            $startDate = \Carbon\Carbon::parse($this->dateStart);
+            $endDate   = \Carbon\Carbon::parse($this->dateBack);
+
+            if ($endDate->greaterThanOrEqualTo($startDate)) {
+                $days = $startDate->diffInDays($endDate);
+                $days = round($days);
+            }
+        }
+
+        // Calcul seulement si réservation avec chauffeur
+        if ($this->type === 'leasing') {
+            return $days * $driverDailyRate;
+        }
+
+        return 0;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($reservation) {
+            $driverDailyRate = Setting::get('driverDailyRate', 0); // tarif global fixé par l’entreprise
+
+            if (empty($reservation->status)) {
+                $reservation->status = 'en attente'; // valeur par défaut
+            }
+
+            if (empty($reservation->driver_id)) {
+                $reservation->type = 'reservation';
+            } else {
+                $reservation->type = 'leasing';
+            }
+            $reservation->driverAmount = $reservation->calculateDriverAmount($driverDailyRate);
+        });
+    }
 
     public function User() {
         return $this->belongsTo(User::class);

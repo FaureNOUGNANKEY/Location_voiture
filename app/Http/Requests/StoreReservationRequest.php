@@ -30,7 +30,7 @@ class StoreReservationRequest extends FormRequest
             'dateBack'   => 'nullable|date|after_or_equal:dateStart',
             'driverAmount'   => 'nullable|numeric|min:0',
             'type'         => 'required|in:reservation,leasing',
-            'status'      => 'required|in:En attente,validé,annulée,refusée,en cours,terminée',
+            'status'      => 'nullable|in:En attente,validé,annulée,refusée,en cours,terminée',
         ];
     }
 
@@ -45,7 +45,7 @@ class StoreReservationRequest extends FormRequest
             'dateStart.date'      => 'La date de début doit être une date valide.',
             'dateStart.after_or_equal' => 'La date de début doit être aujourd\'hui ou une date future.',
             'dateBack.date'       => 'La date de retour doit être une date valide.',
-            'dateBack.after'      => 'La date de retour doit être après la date de début.',
+            'dateBack.after_or_equal'      => 'La date de retour doit être après la date de début.',
             'driver_id.exists'   => 'Le chauffeur sélectionné n\'existe pas.',
             'driverAmount.numeric' => 'Le montant du chauffeur doit être un nombre.',
             'driverAmount.min'     => 'Le montant du chauffeur doit être supérieur ou égal à 0.',

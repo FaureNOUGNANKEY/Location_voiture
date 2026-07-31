@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Setting;
 use Illuminate\Database\Eloquent\Model;
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
@@ -61,6 +62,8 @@ class Invoice extends Model
 
             $days = 0;
             $dayAmount = 0;
+            $tvaRate = Setting::get('tvaRate', 0);
+            $reductionRate = setting::get('reductionRate',0);
 
             if ($invoice->reservation) {
                 $startDate = $invoice->reservation->dateStart ? \Carbon\Carbon::parse($invoice->reservation->dateStart) : null;
@@ -75,13 +78,14 @@ class Invoice extends Model
             }
 
             $baseAmount = max(0, $days * $dayAmount);
-            $reductionAmount = max(0, (float) ($invoice->reductionAmount ?? 0));
-            $driverAmount = max(0, (float) ($invoice->driverAmount ?? 0));
+            $reductionAmount = max(0, (float) ($baseAmount * $reductionRate ?? 0));
+            $driverAmount = max(0, (float) ($invoice->reservation->driverAmount ?? 0));
 
             $netPrice = max(0, $baseAmount - $reductionAmount + $driverAmount);
-            $tvaAmount = max(0, $netPrice * 0.18);
+            $tvaAmount = max(0, $netPrice * $tvaRate);
             $totalAmount = max(0, $netPrice + $tvaAmount);
 
+            $invoice->reductionAmount = round($reductionAmount, 2);
             $invoice->amount = round($baseAmount, 2);
             $invoice->tvaAmount = round($tvaAmount, 2);
             $invoice->totalAmount = round($totalAmount, 2);

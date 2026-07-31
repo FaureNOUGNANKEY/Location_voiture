@@ -27,7 +27,7 @@ class ReservationResource extends JsonResource
             'car' => new CarResource($this->whenLoaded('car')),
             'driver' => new DriverResource($this->whenLoaded('driver')),
 
-            'amount' => $this->invoice?->amount,
+            'totalAmount' => $this->invoice?->totalAmount,
 
             'created_at' => $this->created_at->format('d/m/Y H:i'),
             'updated_at' => $this->updated_at->format('d/m/Y H:i'),

@@ -39,3 +39,5 @@ use App\Http\Controllers\SettingController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::apiResource('cars', CarController::class);
+Route::post('/reservations/estimate', [ReservationController::class, 'estimate']);
+

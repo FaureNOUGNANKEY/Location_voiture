@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Resources\ReservationResource;
 use App\Models\Reservation;
+use App\Models\Setting;
 
 class ReservationController extends Controller
 {
@@ -71,4 +72,46 @@ class ReservationController extends Controller
         $reservation->delete();
         return response()->json(['message' => 'Réservation supprimée avec succès'],200);
     }
+
+
+    public function estimate(StoreReservationRequest $request)
+    {
+        $data = $request->validated();
+
+        $startDate = \Carbon\Carbon::parse($data['dateStart']);
+        $endDate   = \Carbon\Carbon::parse($data['dateBack']);
+        $days = $startDate->diffInDays($endDate);
+        $days = round($days);
+
+        $car = \App\Models\Car::findOrFail($data['car_id']);
+        $dayAmount = $car->dayAmount ?? 0;
+
+        $baseAmount = $days * $dayAmount;
+
+        $reductionRate = \App\Models\Setting::get('reductionRate', 0);
+        $tvaRate       = \App\Models\Setting::get('tvaRate', 0);
+        $driverDailyRate = Setting::get('driverDailyRate', 0);
+
+        $reductionAmount = $baseAmount * $reductionRate;
+
+        if ($data['type'] === 'leasing') {
+            $driverAmount    = $driverDailyRate * $days ;
+        }else{
+            $driverAmount = 0;
+        }
+
+        $netPrice   = $baseAmount - $reductionAmount + $driverAmount;
+        $tvaAmount  = $netPrice * $tvaRate;
+        $totalAmount = $netPrice + $tvaAmount;
+
+        return response()->json([
+            'days'            => $days,
+            'carAmount'       => round($baseAmount, 2),
+            'reductionAmount' => round($reductionAmount, 2),
+            'driverAmount'    => round($driverAmount, 2),
+            'tvaAmount'       => round($tvaAmount, 2),
+            'totalAmount'     => round($totalAmount, 2),
+        ]);
+    }
+
 }

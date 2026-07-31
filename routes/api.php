@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\SettingController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -29,6 +30,10 @@ use App\Http\Controllers\StatisticsController;
     Route::apiResource('payments',PaymentController::class);
     Route::get('/statistics', [StatisticsController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::get('/settings', [SettingController::class, 'index']);
+    Route::get('/settings/{key}', [SettingController::class, 'show']);
+    Route::put('/settings/{key}', [SettingController::class, 'update']);
 //});
 
 Route::post('register', [AuthController::class, 'register']);

@@ -2,11 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Category;
-use App\Models\Driver;
-use App\Models\Reservation;
-use App\Models\Panne;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -26,7 +21,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $this->call([CategorySeeder::class, CarSeeder::class,DriverSeeder::class, ReservationSeeder::class ,UserSeeder::class,PanneSeeder::class]);
+        $this->call([CategorySeeder::class, CarSeeder::class,DriverSeeder::class, ReservationSeeder::class ,UserSeeder::class,PanneSeeder::class, SettingSeeder::class]);
 
     }
 }

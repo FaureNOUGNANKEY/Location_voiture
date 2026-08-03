@@ -106,6 +106,7 @@ class ReservationController extends Controller
 
         return response()->json([
             'days'            => $days,
+            'driverDailyRate'=>round($driverDailyRate,2),
             'carAmount'       => round($baseAmount, 2),
             'reductionAmount' => round($reductionAmount, 2),
             'driverAmount'    => round($driverAmount, 2),

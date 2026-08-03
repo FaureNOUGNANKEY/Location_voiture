@@ -14,6 +14,10 @@ class AuthController extends Controller
     public function register (StoreUserRequest $request)
     {
         $user = $request->validated();
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('users', 'public');
+            $user['photo'] = $path;
+        }
         $user['password'] = Hash::make($user['password']);
         $user = User::create($user);
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -23,6 +27,7 @@ class AuthController extends Controller
             'role' => $user->role,
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'photo_url' => $user->photo ? asset('storage/' . $user->photo) : null,
         ], 201);
     }
     public function login(Request $request)
@@ -50,6 +55,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'connexion réussie',
             'access_token' => $token,
+            'user' => $user,
             'role' => $user->role,
             'token_type' => 'Bearer',
         ]);

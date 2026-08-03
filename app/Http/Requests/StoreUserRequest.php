@@ -6,6 +6,10 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+
 class StoreUserRequest extends FormRequest
 {
     /**
@@ -21,6 +25,16 @@ class StoreUserRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
+
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Erreur de validation',
+            'errors' => $validator->errors()
+        ], 422));
+    }
+
     public function rules(): array
     {
         return [

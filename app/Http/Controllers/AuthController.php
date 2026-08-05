@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Historic;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -55,7 +56,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'connexion réussie',
             'access_token' => $token,
-            'user' => $user,
+            'user' => new UserResource($user),
             'role' => $user->role,
             'token_type' => 'Bearer',
         ]);

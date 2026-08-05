@@ -18,26 +18,40 @@ use App\Http\Controllers\SettingController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-//Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('categories', CategoryController::class);
+
+// Routes publiques
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('/reservations/estimate', [ReservationController::class, 'estimate']);
+Route::get('/cars', [CarController::class, 'index']);        // catalogue public
+Route::get('/cars/{car}', [CarController::class, 'show']);   // détail voiture public
+Route::get('/categories', [CategoryController::class, 'index']);
+
+// Routes accessibles à tout utilisateur connecté (admin OU client)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', fn (Request $r) => $r->user());
+    Route::post('logout', [AuthController::class, 'logout']);
+});
+
+// Routes réservées aux clients connectés
+Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
+    Route::apiResource('reservations', ReservationController::class)
+        ->only(['index', 'store', 'show']); // un client gère ses propres réservations
+    Route::get('/invoices', [InvoiceController::class, 'index']); // ses factures uniquement
+});
+
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::apiResource('categories', CategoryController::class)->except(['index']);
     Route::apiResource('drivers', DriverController::class);
     Route::apiResource('pannes', PanneController::class);
-    //Route::apiResource('cars', CarController::class);
+    Route::apiResource('cars', CarController::class)->except(['index','show']);
     Route::apiResource('historics', HistoricController::class);
     Route::apiResource('users',UserController::class);
     Route::apiResource('reservations', ReservationController::class);
     Route::apiResource('invoices',InvoiceController::class);
     Route::apiResource('payments',PaymentController::class);
     Route::get('/statistics', [StatisticsController::class, 'index']);
-    Route::post('logout', [AuthController::class, 'logout']);
-
     Route::get('/settings', [SettingController::class, 'index']);
     Route::get('/settings/{key}', [SettingController::class, 'show']);
     Route::put('/settings/{key}', [SettingController::class, 'update']);
-//});
-
-Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
-Route::apiResource('cars', CarController::class);
-Route::post('/reservations/estimate', [ReservationController::class, 'estimate']);
-
+});

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreReservationRequest;
 use App\Http\Resources\ReservationResource;
 use App\Models\Reservation;
 use App\Models\Setting;
+use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
@@ -18,32 +19,76 @@ class ReservationController extends Controller
     }
 
     // Créer une réservation
-    public function store(StoreReservationRequest $request)
-    {
-        $reservation = Reservation::create($request->validated());
+    // public function store(StoreReservationRequest $request)
+    // {
+    //     $reservation = Reservation::create($request->validated());
 
-         // Créer la facture liée (les calculs se font dans Invoice::boot)
-        $invoice = $reservation->invoice()->create([
-            'driverAmount'    => $reservation->driverAmount,
-            'reductionAmount' => $reservation->reductionAmount ?? 0,
-            'status'          => 'En attente',
-        ]);
+    //      // Créer la facture liée (les calculs se font dans Invoice::boot)
+    //     $invoice = $reservation->invoice()->create([
+    //         'driverAmount'    => $reservation->driverAmount,
+    //         'reductionAmount' => $reservation->reductionAmount ?? 0,
+    //         'status'          => 'En attente',
+    //     ]);
 
-        //Retourner la réponse API
-        return response()->json([
-            'reservation' => new ReservationResource($reservation),
-            'invoice'     => $invoice
-        ], 201);
+    //     //Retourner la réponse API
+    //     return response()->json([
+    //         'reservation' => new ReservationResource($reservation),
+    //         'invoice'     => $invoice
+    //     ], 201);
+
 
        // return new ReservationResource($reservation);
+    // }
+
+    public function store(StoreReservationRequest $request)
+{
+    $data = $request->validated();
+    $user = $request->user();
+
+    // Si c'est un client, on force son user_id
+    if ($user->role === 'client') {
+        $data['user_id'] = $user->id;
     }
 
-    // Afficher une réservation
-    public function show(int $id)
+    // Si c'est un admin, on garde le user_id envoyé dans la requête
+    $reservation = Reservation::create($data);
+
+    $invoice = $reservation->invoice()->create([
+        'driverAmount'    => $reservation->driverAmount,
+        'reductionAmount' => $reservation->reductionAmount ?? 0,
+        'status'          => 'En attente',
+    ]);
+
+    return response()->json([
+        'reservation' => new ReservationResource($reservation),
+        'invoice' => $invoice,
+    ], 201);
+}
+
+    //Afficher une réservation
+    public function show(Request $request, int $id)
     {
-        $reservation = Reservation::with(['user','car','driver','car.category','invoice'])->findOrFail($id);
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié'], 401);
+        }
+
+        if ($user->role === 'admin') {
+            // Admin : accès complet
+            $reservation = Reservation::with(['user','car','driver','car.category','invoice'])
+                ->findOrFail($id);
+        } else {
+            // Client : accès limité à ses réservations
+            $reservation = Reservation::with(['user','car','driver','car.category','invoice'])
+                ->where('id', $id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+        }
+
         return new ReservationResource($reservation);
     }
+
 
     // Mettre à jour une réservation
     public function update(StoreReservationRequest $request, int $id)
@@ -115,4 +160,33 @@ class ReservationController extends Controller
         ]);
     }
 
+    public function myReservations(Request $request)
+    {
+        $user = $request->user();
+
+        // Récupérer toutes les réservations de l’utilisateur connecté
+        $reservations = Reservation::with(['car','driver','user','invoice','car.category'])
+            ->where('user_id', $user->id)
+            ->orderBy('dateStart', 'asc')
+            ->get();
+
+        // Retourner via Resource
+        return ReservationResource::collection($reservations);
+    }
+
+    public function cancel(Request $request, int $id)
+    {
+        $reservation = Reservation::findOrFail($id);
+
+        // Vérifier que l'utilisateur connecté est bien propriétaire
+        $user = $request->user();
+        if (!$user || $reservation->user_id !== $user->id) {
+            return response()->json(['message' => 'Accès refusé'], 403);
+        }
+
+        $reservation->status = 'annulée';
+        $reservation->save();
+
+        return new ReservationResource($reservation);
+    }
 }

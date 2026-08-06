@@ -43,6 +43,33 @@ class Reservation extends Model
         return 0;
     }
 
+    public function getComputedStatusAttribute()
+    {
+        // Statuts fixés par action humaine
+        if (in_array($this->status, ['en attente', 'refusée', 'annulée'])) {
+            return $this->status;
+        }
+
+        // Si validée → calculer en fonction des dates
+        if ($this->status === 'validé') {
+            $start = \Carbon\Carbon::parse($this->dateStart);
+            $end   = \Carbon\Carbon::parse($this->dateBack);
+            $now   = now();
+
+            if ($start->gt($now)) {
+                return 'à venir';
+            } elseif ($start->lte($now) && $end->gte($now)) {
+                return 'en cours';
+            } elseif ($end->lt($now)) {
+                return 'terminée';
+            }
+        }
+
+        // Par défaut, on renvoie le statut métier
+        return $this->status;
+    }
+
+
     protected static function boot()
     {
         parent::boot();

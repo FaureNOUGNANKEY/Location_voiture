@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ReservationController;
@@ -27,29 +28,35 @@ Route::get('/cars', [CarController::class, 'index']);        // catalogue public
 Route::get('/cars/{car}', [CarController::class, 'show']);   // détail voiture public
 Route::get('/categories', [CategoryController::class, 'index']);
 
-// Routes accessibles à tout utilisateur connecté (admin OU client)
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/user', fn (Request $r) => $r->user());
-    Route::post('logout', [AuthController::class, 'logout']);
-});
-
 // Routes réservées aux clients connectés
 Route::middleware(['auth:sanctum', 'role:client'])->group(function () {
-    Route::apiResource('reservations', ReservationController::class)
-        ->only(['index', 'store', 'show']); // un client gère ses propres réservations
+    Route::get('/reservations/myReservations', [ReservationController::class, 'myReservations']);
+    Route::put('/reservations/{id}/cancel', [ReservationController::class, 'cancel']);
     Route::get('/invoices', [InvoiceController::class, 'index']); // ses factures uniquement
+});
+
+// Routes accessibles à tout utilisateur connecté (admin OU client)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user', fn(Request $r) => $r->user());
+    Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::get('/reservations', [ReservationController::class, 'index']);
+    Route::post('/reservations', [ReservationController::class, 'store']);
+    Route::get('/reservations/{id}', [ReservationController::class, 'show']);
+    Route::put('/reservations/{id}', [ReservationController::class, 'update']);
+    Route::delete('/reservations/{id}', [ReservationController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::apiResource('categories', CategoryController::class)->except(['index']);
     Route::apiResource('drivers', DriverController::class);
     Route::apiResource('pannes', PanneController::class);
-    Route::apiResource('cars', CarController::class)->except(['index','show']);
+    Route::apiResource('cars', CarController::class)->except(['index', 'show']);
     Route::apiResource('historics', HistoricController::class);
-    Route::apiResource('users',UserController::class);
-    Route::apiResource('reservations', ReservationController::class);
-    Route::apiResource('invoices',InvoiceController::class);
-    Route::apiResource('payments',PaymentController::class);
+
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('invoices', InvoiceController::class);
+    Route::apiResource('payments', PaymentController::class);
     Route::get('/statistics', [StatisticsController::class, 'index']);
     Route::get('/settings', [SettingController::class, 'index']);
     Route::get('/settings/{key}', [SettingController::class, 'show']);

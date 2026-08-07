@@ -22,7 +22,8 @@ use App\Http\Controllers\SettingController;
 
 // Routes publiques
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
+Route::post('loginAdmin', [AuthController::class, 'loginAdmin']);
+Route::post('loginClient', [AuthController::class, 'loginClient']);
 Route::post('/reservations/estimate', [ReservationController::class, 'estimate']);
 Route::get('/cars', [CarController::class, 'index']);        // catalogue public
 Route::get('/cars/{car}', [CarController::class, 'show']);   // détail voiture public

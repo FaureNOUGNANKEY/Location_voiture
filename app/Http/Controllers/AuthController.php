@@ -31,36 +31,86 @@ class AuthController extends Controller
             'photo_url' => $user->photo ? asset('storage/' . $user->photo) : null,
         ], 201);
     }
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-        $identifiants = $request->only('email', 'password');
+//login de l'admin
+    public function loginAdmin(Request $request)
+{
+    $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        if (!Auth::attempt($identifiants)) {
-            return response()->json(['message' => 'Identifiants invalides'], 401);
-        }
-        $user = Auth::user();
-        $token = $user->createToken('auth_token')->plainTextToken;
+    $credentials = $request->only('email', 'password');
 
-        //Enregistrement de l'historique de connexion
-        Historic::create([
-            'user_id' => $user->id,
-            'activite' => 'login',
-            'dateConnexion' => now()
-        ]);
-
-
-        return response()->json([
-            'message' => 'connexion réussie',
-            'access_token' => $token,
-            'user' => new UserResource($user),
-            'role' => $user->role,
-            'token_type' => 'Bearer',
-        ]);
+    if (!Auth::attempt($credentials)) {
+        return response()->json(['message' => 'Identifiants invalides'], 401);
     }
+
+    $user = Auth::user();
+
+    // Vérification du rôle attendu
+    if ($user->role !== 'admin') {
+        Auth::logout();
+        return response()->json(['message' => 'Identifiants invalides'], 401);
+    }
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    Historic::create([
+        'user_id'       => $user->id,
+        'activite'      => 'login',
+        'dateConnexion' => now(),
+    ]);
+
+    return response()->json([
+        'message'      => 'Connexion réussie',
+        'access_token' => $token,
+        'user'         => new UserResource($user),
+        'role'         => $user->role,
+        'token_type'   => 'Bearer',
+    ]);
+}
+
+// login du client
+public function loginClient(Request $request)
+{
+    $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required|string',
+    ]);
+
+    $credentials = $request->only('email', 'password');
+
+    if (!Auth::attempt($credentials)) {
+        return response()->json(['message' => 'Identifiants invalides'], 401);
+    }
+
+    $user = Auth::user();
+
+    // Vérification du rôle attendu
+    if ($user->role !== 'client') {
+        Auth::logout();
+        return response()->json(['message' => 'Identifiants invalides'], 401);
+    }
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    Historic::create([
+        'user_id'       => $user->id,
+        'activite'      => 'login',
+        'dateConnexion' => now(),
+    ]);
+
+    return response()->json([
+        'message'      => 'Connexion réussie',
+        'access_token' => $token,
+        'user'         => new UserResource($user),
+        'role'         => $user->role,
+        'token_type'   => 'Bearer',
+    ]);
+}
+
+
+
 
     public function logout(Request $request)
     {

@@ -41,12 +41,14 @@ class UpdateCarRequest extends FormRequest
             ],
             'description'=>'string|nullable|max:255',
             'kmAmount'=>'numeric|required|min:0',
+            'status' => 'string|max:255|in:Disponible,Louée,Indisponible,En maintenance,En panne',
             'dayAmount'=>'numeric|required|min:0',
             'state'=>'string|required|max:255',
             'place'=>'numeric|required|min:0',
             'door'=>'numeric|required|min:0',
+            'transmission' => 'string|required|max:255',
             'kilometrage'=>'numeric|required|min:0',
-            'niveauCarburant'=>'numeric|required|min:0',
+           'niveauCarburant' => 'required|in:Plein,1/4,1/2,3/4,Vide',
             'domage'=>'string|max:255',
             'category_id' => 'required|exists:categories,id',
         ];
@@ -92,7 +94,11 @@ class UpdateCarRequest extends FormRequest
             'kilometrage.numeric'      => 'Le kilométrage doit être un nombre.',
 
             'niveauCarburant.required' => 'Le niveau de carburant est obligatoire.',
-            'niveauCarburant.numeric'  => 'Le niveau de carburant doit être un nombre.',
+            'niveauCarburant.in'       => 'Le niveau de carburant doit être parmi : Plein, 3/4, 1/2, 1/4 ou Vide.',
+
+            'transmission.required'            => 'La transmission est obligatoire.',
+            'transmission.string'              => 'La transmissione= doit être une chaîne de caractères.',
+
 
             'domage.string'            => 'Le champ dommage doit être une chaîne de caractères.',
 

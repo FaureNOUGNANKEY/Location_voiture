@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('carBack', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('reservation_id');
-            $table->string('invoiceNumber')->unique();
-            $table->decimal('driverAmount', 10, 2);
-            $table->decimal('reductionAmount', 10, 2)->default(0);
-            $table->decimal('tvaAmount', 10, 2)->default(0);
-            $table->decimal('amount', 10, 2)->default(0);
-            $table->decimal('totalAmount', 10, 2);
-            $table->enum('status', ['Payé', 'En attente', 'Non payé','Annulé','Partiellement payé'])->default('En attente');
+            $table->decimal('returnKm', 15, 2);
+            $table->enum('fluelLevel', ['Plein','1/4','1/2','3/4' ,'Vide']);
+            $table->string('state');
+            $table->string('domage')->nullable();
+            $table->string('comment')->nullable();
             $table->foreign('reservation_id')->references('id')->on('reservations')->onDelete('cascade');
             $table->timestamps();
         });
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('carBack');
     }
 };

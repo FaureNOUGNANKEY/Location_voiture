@@ -24,7 +24,7 @@ class StorePaymentRequest extends FormRequest
     {
         return [
             'invoice_id' => 'required|exists:invoices,id',
-            'modePayment' => 'required|in:espece,carte bancaire,virement bancaire,cheque',
+            'modePayment' => 'required',
             'amount' => 'required|numeric|min:0',
         ];
     }
@@ -35,7 +35,6 @@ class StorePaymentRequest extends FormRequest
             'invoice_id.required' => 'La facture est obligatoire.',
             'invoice_id.exists' => 'La facture sélectionnée n\'existe pas.',
             'modePayment.required' => 'Le mode de paiement est obligatoire.',
-            'modePayment.in' => 'Le mode de paiement doit être "espece", "carte bancaire", "virement bancaire" ou "cheque".',
             'amount.required' => 'Le montant est obligatoire.',
             'amount.numeric' => 'Le montant doit être un nombre.',
             'amount.min' => 'Le montant doit être supérieur ou égal à 0.',

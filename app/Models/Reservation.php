@@ -19,7 +19,7 @@ use App\Models\Setting;
 
 class Reservation extends Model
 {
-    protected $fillable = ['id','user_id','car_id','driver_id','dateStart','dateBack','driverAmount','type','status'];
+    protected $fillable = ['id', 'user_id', 'car_id', 'driver_id', 'dateStart', 'dateBack', 'driverAmount', 'type', 'status'];
 
     public function calculateDriverAmount(float $driverDailyRate): float
     {
@@ -46,22 +46,22 @@ class Reservation extends Model
     public function getComputedStatusAttribute()
     {
         // Statuts fixés par action humaine
-        if (in_array($this->status, ['en attente', 'refusée', 'annulée'])) {
+        if (in_array($this->status, ['En attente', 'Refusée', 'Annulée'])) {
             return $this->status;
         }
 
         // Si validée → calculer en fonction des dates
-        if ($this->status === 'validé') {
+        if ($this->status === 'Validée') {
             $start = \Carbon\Carbon::parse($this->dateStart);
             $end   = \Carbon\Carbon::parse($this->dateBack);
             $now   = now();
 
             if ($start->gt($now)) {
-                return 'à venir';
+                return 'A venir';
             } elseif ($start->lte($now) && $end->gte($now)) {
-                return 'en cours';
+                return 'En cours';
             } elseif ($end->lt($now)) {
-                return 'terminée';
+                return 'Terminée';
             }
         }
 
@@ -78,7 +78,7 @@ class Reservation extends Model
             $driverDailyRate = Setting::get('driverDailyRate', 0); // tarif global fixé par l’entreprise
 
             if (empty($reservation->status)) {
-                $reservation->status = 'en attente'; // valeur par défaut
+                $reservation->status = 'En attente'; // valeur par défaut
             }
 
             if (empty($reservation->driver_id)) {
@@ -90,18 +90,35 @@ class Reservation extends Model
         });
     }
 
-    public function User() {
+    public function isActive()
+    {
+        $start = \Carbon\Carbon::parse($this->dateStart);
+        $end   = \Carbon\Carbon::parse($this->dateBack);
+        $now   = now();
+
+        return $this->status === 'Validée' && $start->lte($now) && $end->gte($now);
+    }
+
+    public function User()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function car() {
+    public function car()
+    {
         return $this->belongsTo(Car::class);
     }
-    public function driver() {
+    public function driver()
+    {
         return $this->belongsTo(Driver::class);
     }
-    public function invoice() {
+    public function invoice()
+    {
         return $this->hasOne(Invoice::class);
     }
 
+    public function carBack()
+    {
+        return $this->hasOne(CarBack::class);
+    }
 }

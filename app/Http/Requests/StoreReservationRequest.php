@@ -30,7 +30,7 @@ class StoreReservationRequest extends FormRequest
             'dateBack'   => 'nullable|date|after_or_equal:dateStart',
             'driverAmount'   => 'nullable|numeric|min:0',
             'type'         => 'required|in:reservation,leasing',
-            'status'      => 'nullable|in:En attente,validé,annulée,refusée,en cours,terminée',
+            'status'      => 'nullable|in:En attente,Validée,Annulée,Refusée,En cours,Terminée',
         ];
     }
 

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Driver extends Model
 {
-    protected $fillable = ['id','lastname','firstname','photo','phone','status'];
+    protected $fillable = ['id','lastname','firstname','photo','phone','status','active'];
 
     public function reservations() {
         return $this->hasMany(Reservation::class);

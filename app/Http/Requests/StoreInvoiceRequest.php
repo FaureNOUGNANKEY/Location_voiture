@@ -30,7 +30,7 @@ class StoreInvoiceRequest extends FormRequest
             'tvaAmount' => 'nullable|numeric|min:0',
             'amount' => 'numeric|min:0',
             'totalAmount' => 'numeric|min:0',
-            'status' => 'required|in:payé,en attente,non payé,annulé,partiellement payé',
+            'status' => 'required|in:Payé,En attente,Non payé,Annulé,Partiellement payé',
         ];
     }
     public function messages(): array

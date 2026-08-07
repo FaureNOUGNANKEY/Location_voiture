@@ -23,5 +23,9 @@ class SettingSeeder extends Seeder
             ['key' => 'tvaRate'],
             ['value' => 0.18] // 18%
         );
+        Setting::updateOrCreate(
+            ['key' => 'reductionRate'],
+            ['value' => 0.0] // 0%
+        );
     }
 }

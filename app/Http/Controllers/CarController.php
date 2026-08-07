@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCarRequest;
 use App\Models\Car;
 use Illuminate\Http\Request;
 use App\Http\Resources\CarResource;
+
 class CarController extends Controller
 {
     /**
@@ -14,7 +15,7 @@ class CarController extends Controller
      */
     public function index()
     {
-        $cars = Car::with('category')->OrderBy('created_at','desc')->paginate(15);
+        $cars = Car::with('category')->OrderBy('created_at', 'desc')->paginate(15);
         return CarResource::collection($cars);
     }
 
@@ -64,7 +65,7 @@ class CarController extends Controller
             $validated['photo'] = $path;
         }
 
-    $car->update($validated);
+        $car->update($validated);
 
         return new CarResource($car);
     }
@@ -75,7 +76,23 @@ class CarController extends Controller
     public function destroy(int $id)
     {
         $car = Car::findOrFail($id);
+
+        if (!$car) {
+            return response()->json(['message' => 'Voiture introuvable'], 404);
+        }
+
+        // Vérifier si la voiture est louée
+        $hasActiveReservation = $car->reservations()
+            ->whereIn('status', ['En cours', 'Validée'])
+            ->exists();
+
+        if ($hasActiveReservation) {
+            return response()->json([
+                'message' => 'Impossible de supprimer : la voiture est actuellement louée.'
+            ], 400);
+        }
+
         $car->delete();
-        return response()->Json(["message"=>'voiture supprimée'],200);
+        return response()->Json(["message" => 'voiture supprimée'], 200);
     }
 }

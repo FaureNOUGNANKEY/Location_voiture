@@ -38,7 +38,8 @@ class StoreDriverRequest extends FormRequest
         ],
             'phone' => 'required|string|max:20',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'string|max:255|in:disponible,affecté,en congé,inactif,indisponible',
+            'status' => 'string|max:255|in:Disponible,Affecté,En congé,Inactif,Indisponible',
+            // 'active' => 'required|boolean',
         ];
     }
 
@@ -50,7 +51,7 @@ class StoreDriverRequest extends FormRequest
             'lastname.unique'    => 'Un chauffeur avec ce prénom et ce nom existe déjà.',
             'phone.required'     => 'Le numéro de téléphone est obligatoire.',
             'status.string'      => 'Le statut doit être une chaîne de caractères.',
-            'status.in'          => 'Le statut doit être l\'un des suivants : disponible, affecté, en congé, inactif, indisponible.',
+            'status.in'          => 'Le statut doit être l\'un des suivants : Disponible, Affecté, En congé, Inactif, Indisponible.',
         ];
     }
 

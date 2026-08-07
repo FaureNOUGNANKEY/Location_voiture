@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('car_id');
             $table->string('description');
             $table->enum('priority',['Urgente','Moyenne', 'Faible']);
-            $table->enum('status',['En attente','En réparation','Réparé'])->default('En attente');
+            $table->enum('status',['En attente','En réparation','Réparée'])->default('En attente');
             $table->double('panneAmount');
             $table->timestamps();
             $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');

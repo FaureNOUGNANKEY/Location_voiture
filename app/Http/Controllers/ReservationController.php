@@ -14,56 +14,51 @@ class ReservationController extends Controller
     // Liste des réservations
     public function index()
     {
-        $reservations = Reservation::with(['user','car','driver','car.category','invoice'])->orderBy('created_at','desc')->paginate(15);
+        $reservations = Reservation::with(['user', 'car', 'driver', 'car.category', 'invoice'])->orderBy('created_at', 'desc')->paginate(15);
         return ReservationResource::collection($reservations);
     }
 
-    // Créer une réservation
-    // public function store(StoreReservationRequest $request)
-    // {
-    //     $reservation = Reservation::create($request->validated());
-
-    //      // Créer la facture liée (les calculs se font dans Invoice::boot)
-    //     $invoice = $reservation->invoice()->create([
-    //         'driverAmount'    => $reservation->driverAmount,
-    //         'reductionAmount' => $reservation->reductionAmount ?? 0,
-    //         'status'          => 'En attente',
-    //     ]);
-
-    //     //Retourner la réponse API
-    //     return response()->json([
-    //         'reservation' => new ReservationResource($reservation),
-    //         'invoice'     => $invoice
-    //     ], 201);
-
-
-       // return new ReservationResource($reservation);
-    // }
 
     public function store(StoreReservationRequest $request)
-{
-    $data = $request->validated();
-    $user = $request->user();
+    {
+        $data = $request->validated();
+        $user = $request->user();
 
-    // Si c'est un client, on force son user_id
-    if ($user->role === 'client') {
-        $data['user_id'] = $user->id;
+        // Si c'est un client, on force son user_id
+        if ($user->role === 'client') {
+            $data['user_id'] = $user->id;
+        }
+
+        // Si c'est un admin, on garde le user_id envoyé dans la requête
+        $reservation = Reservation::create($data);
+
+        if ($reservation->isActive()) {
+            $reservation->car->status = 'Louée';
+        } elseif (in_array($reservation->status, ['Terminée', 'Annulée'])) {
+            $reservation->car->status = 'Disponible';
+        }
+        $reservation->car->save();
+
+        if ($reservation->driver) {
+            if ($reservation->isActive()&& $reservation->status == "Validée") {
+                $reservation->driver->status = 'Affecté';
+            } elseif (in_array($reservation->status, ['Terminée', 'Annulée'])) {
+                $reservation->driver->status = 'Disponible';
+            }
+            $reservation->driver->save();
+        }
+
+        $invoice = $reservation->invoice()->create([
+            'driverAmount'    => $reservation->driverAmount,
+            'reductionAmount' => $reservation->reductionAmount ?? 0,
+            'status'          => 'En attente',
+        ]);
+
+        return response()->json([
+            'reservation' => new ReservationResource($reservation),
+            'invoice' => $invoice,
+        ], 201);
     }
-
-    // Si c'est un admin, on garde le user_id envoyé dans la requête
-    $reservation = Reservation::create($data);
-
-    $invoice = $reservation->invoice()->create([
-        'driverAmount'    => $reservation->driverAmount,
-        'reductionAmount' => $reservation->reductionAmount ?? 0,
-        'status'          => 'En attente',
-    ]);
-
-    return response()->json([
-        'reservation' => new ReservationResource($reservation),
-        'invoice' => $invoice,
-    ], 201);
-}
 
     //Afficher une réservation
     public function show(Request $request, int $id)
@@ -76,11 +71,11 @@ class ReservationController extends Controller
 
         if ($user->role === 'admin') {
             // Admin : accès complet
-            $reservation = Reservation::with(['user','car','driver','car.category','invoice'])
+            $reservation = Reservation::with(['user', 'car', 'driver', 'car.category', 'invoice'])
                 ->findOrFail($id);
         } else {
             // Client : accès limité à ses réservations
-            $reservation = Reservation::with(['user','car','driver','car.category','invoice'])
+            $reservation = Reservation::with(['user', 'car', 'driver', 'car.category', 'invoice'])
                 ->where('id', $id)
                 ->where('user_id', $user->id)
                 ->firstOrFail();
@@ -89,12 +84,27 @@ class ReservationController extends Controller
         return new ReservationResource($reservation);
     }
 
-
     // Mettre à jour une réservation
     public function update(StoreReservationRequest $request, int $id)
     {
         $reservation = Reservation::findOrFail($id);
         $reservation->update($request->validated());
+
+        if ($reservation->isActive()) {
+            $reservation->car->status = 'Louée';
+        } elseif (in_array($reservation->status, ['Terminée', 'Annulée'])) {
+            $reservation->car->status = 'Disponible';
+        }
+        $reservation->car->save();
+
+        if ($reservation->driver) {
+            if ($reservation->isActive()&& $reservation->status == "Validée") {
+                $reservation->driver->status = 'Affecté';
+            } elseif (in_array($reservation->status, ['Terminée', 'Annulée'])) {
+                $reservation->driver->status = 'Disponible';
+            }
+            $reservation->driver->save();
+        }
 
         $invoice = $reservation->invoice;
         if ($invoice) {
@@ -102,8 +112,8 @@ class ReservationController extends Controller
                 'driverAmount'    => $reservation->driverAmount,
                 'reductionAmount' => $reservation->reductionAmount ?? 0,
                 'status'          => $invoice->status ?? "En attente",
-        ]);
-    }
+            ]);
+        }
         return response()->json([
             'reservation' => new ReservationResource($reservation),
             'invoice'     => $invoice
@@ -115,7 +125,7 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::findOrFail($id);
         $reservation->delete();
-        return response()->json(['message' => 'Réservation supprimée avec succès'],200);
+        return response()->json(['message' => 'Réservation supprimée avec succès'], 200);
     }
 
 
@@ -140,8 +150,8 @@ class ReservationController extends Controller
         $reductionAmount = $baseAmount * $reductionRate;
 
         if ($data['type'] === 'leasing') {
-            $driverAmount    = $driverDailyRate * $days ;
-        }else{
+            $driverAmount    = $driverDailyRate * $days;
+        } else {
             $driverAmount = 0;
         }
 
@@ -151,7 +161,7 @@ class ReservationController extends Controller
 
         return response()->json([
             'days'            => $days,
-            'driverDailyRate'=>round($driverDailyRate,2),
+            'driverDailyRate' => round($driverDailyRate, 2),
             'carAmount'       => round($baseAmount, 2),
             'reductionAmount' => round($reductionAmount, 2),
             'driverAmount'    => round($driverAmount, 2),
@@ -165,7 +175,7 @@ class ReservationController extends Controller
         $user = $request->user();
 
         // Récupérer toutes les réservations de l’utilisateur connecté
-        $reservations = Reservation::with(['car','driver','user','invoice','car.category'])
+        $reservations = Reservation::with(['car', 'driver', 'user', 'invoice', 'car.category'])
             ->where('user_id', $user->id)
             ->orderBy('dateStart', 'asc')
             ->get();
@@ -184,8 +194,13 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Accès refusé'], 403);
         }
 
-        $reservation->status = 'annulée';
+        $reservation->status = 'Annulée';
         $reservation->save();
+
+        if ($reservation->driver) {
+            $reservation->driver->status = 'Disponible';
+            $reservation->driver->save();
+        }
 
         return new ReservationResource($reservation);
     }

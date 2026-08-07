@@ -28,7 +28,7 @@ class PanneController extends Controller
         //Mettre à jour le statut de la voiture associée
         $car = $panne->car;
         if ($car) {
-            $car->status = 'en panne';
+            $car->status = 'En panne';
             $car->save();
         }
         return new PanneResource($panne);
@@ -51,7 +51,7 @@ class PanneController extends Controller
         $panne = Panne::findOrFail($id);
         $panne->update($request->validated());
 
-        if ($panne->status === 'Réparé' && $panne->car) {
+        if ($panne->status === 'Réparée' && $panne->car) {
             $panne->car->status = 'Disponible';
             $panne->car->save();
         }

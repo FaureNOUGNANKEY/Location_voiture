@@ -24,7 +24,7 @@ class StorePanneRequest extends FormRequest
     {
         return [
             'priority' => 'required|in:Faible,Moyenne,Urgente',
-            'status' => 'nullable|in:En attente,En réparation,Réparé',
+            'status' => 'nullable|in:En attente,En réparation,Réparée',
             'description' => 'required|string|max:255',
             'panneAmount' => 'required|numeric|min:0',
             'car_id' => 'required|exists:cars,id',

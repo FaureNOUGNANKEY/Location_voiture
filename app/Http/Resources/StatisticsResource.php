@@ -33,6 +33,8 @@ class StatisticsResource extends JsonResource
                 'unAvailableCars' => $this->carsUnAvailable,
                 'rentedCars'      => $this->carsRented,
                 'brokenCars'      => $this->carsBroken,
+                'carsInRepair' => $this->carsInRepair,
+                'waitingForDriver' => $this->waitingForDriver,
             ],
             'reservationActivity' => $this->reservationActivity,
         ];

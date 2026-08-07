@@ -29,9 +29,11 @@ class CarResource extends JsonResource
             'state'            => $this->state,
             'place'            => $this->place,
             'door'             => $this->door,
+            'transmission'  => $this->transmission,
             'kilometrage'      => $this->kilometrage,
             'niveauCarburant'  => $this->niveauCarburant,
             'domage'           => $this->domage,
+            'active' =>$this->active,
 
             'category' => new CategoryResource($this->whenLoaded('category')),
 
